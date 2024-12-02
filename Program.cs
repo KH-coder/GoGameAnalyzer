@@ -86,6 +86,7 @@ public class SgfAnalyzer
             new BoardRegion(9, 18, 0, 9, "region1"),   // 垂直(ja-jj) 水平(jj-js)
             new BoardRegion(9, 18, 9, 18, "region2"),  // 垂直(js-jj) 水平(jj-js)
             new BoardRegion(0, 9, 0, 9, "region3"),    // 垂直(ja-jj) 水平(jj-aa)
+            new BoardRegion(0, 9, 9, 18, "region4"),   // 垂直(js-jj) 水平(jj-aa)
             // 如果需要第四個區域，可以在這裡添加
         };
 
@@ -218,115 +219,115 @@ public class SgfAnalyzer
             bitmap.Save($"goboard_{region.Name}.png", ImageFormat.Png);
         }
     }
-    public void GenerateImage(string outputPath)
-    {
-        int imageSize = BOARD_SIZE * CELL_SIZE + 2 * MARGIN;
-        using (var bitmap = new Bitmap(imageSize, imageSize))
-        using (var graphics = Graphics.FromImage(bitmap))
-        {
-            graphics.Clear(Color.FromArgb(220, 179, 92));
-            graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+    // public void GenerateImage(string outputPath)
+    // {
+    //     int imageSize = BOARD_SIZE * CELL_SIZE + 2 * MARGIN;
+    //     using (var bitmap = new Bitmap(imageSize, imageSize))
+    //     using (var graphics = Graphics.FromImage(bitmap))
+    //     {
+    //         graphics.Clear(Color.FromArgb(220, 179, 92));
+    //         graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-            // 繪製邊界和網格線
-            using (var pen = new Pen(Color.Black, 2)) // 邊界線較粗
-            {
-                // 外邊框
-                graphics.DrawRectangle(pen, 
-                    MARGIN, MARGIN, 
-                    (BOARD_SIZE - 1) * CELL_SIZE, 
-                    (BOARD_SIZE - 1) * CELL_SIZE);
-            }
+    //         // 繪製邊界和網格線
+    //         using (var pen = new Pen(Color.Black, 2)) // 邊界線較粗
+    //         {
+    //             // 外邊框
+    //             graphics.DrawRectangle(pen, 
+    //                 MARGIN, MARGIN, 
+    //                 (BOARD_SIZE - 1) * CELL_SIZE, 
+    //                 (BOARD_SIZE - 1) * CELL_SIZE);
+    //         }
 
-            using (var pen = new Pen(Color.Black, 1)) // 內部網格線較細
-            {
-                // 垂直線
-                for (int i = 1; i < BOARD_SIZE - 1; i++)
-                {
-                    int linePos = MARGIN + i * CELL_SIZE;
-                    graphics.DrawLine(pen, 
-                        linePos, MARGIN,
-                        linePos, MARGIN + (BOARD_SIZE - 1) * CELL_SIZE);
-                }
+    //         using (var pen = new Pen(Color.Black, 1)) // 內部網格線較細
+    //         {
+    //             // 垂直線
+    //             for (int i = 1; i < BOARD_SIZE - 1; i++)
+    //             {
+    //                 int linePos = MARGIN + i * CELL_SIZE;
+    //                 graphics.DrawLine(pen, 
+    //                     linePos, MARGIN,
+    //                     linePos, MARGIN + (BOARD_SIZE - 1) * CELL_SIZE);
+    //             }
 
-                // 水平線
-                for (int i = 1; i < BOARD_SIZE - 1; i++)
-                {
-                    int linePos = MARGIN + i * CELL_SIZE;
-                    graphics.DrawLine(pen,
-                        MARGIN, linePos,
-                        MARGIN + (BOARD_SIZE - 1) * CELL_SIZE, linePos);
-                }
-            }
+    //             // 水平線
+    //             for (int i = 1; i < BOARD_SIZE - 1; i++)
+    //             {
+    //                 int linePos = MARGIN + i * CELL_SIZE;
+    //                 graphics.DrawLine(pen,
+    //                     MARGIN, linePos,
+    //                     MARGIN + (BOARD_SIZE - 1) * CELL_SIZE, linePos);
+    //             }
+    //         }
 
-            // 繪製星位點
-            using (var brush = new SolidBrush(Color.Black))
-            {
-                int[] starPoints = { 3, 9, 15 };
-                foreach (int x in starPoints)
-                {
-                    foreach (int y in starPoints)
-                    {
-                        int px = MARGIN + x * CELL_SIZE;
-                        int py = MARGIN + y * CELL_SIZE;
-                        graphics.FillEllipse(brush, px - 3, py - 3, 6, 6);
-                    }
-                }
-            }
+    //         // 繪製星位點
+    //         using (var brush = new SolidBrush(Color.Black))
+    //         {
+    //             int[] starPoints = { 3, 9, 15 };
+    //             foreach (int x in starPoints)
+    //             {
+    //                 foreach (int y in starPoints)
+    //                 {
+    //                     int px = MARGIN + x * CELL_SIZE;
+    //                     int py = MARGIN + y * CELL_SIZE;
+    //                     graphics.FillEllipse(brush, px - 3, py - 3, 6, 6);
+    //                 }
+    //             }
+    //         }
 
-            // 繪製座標標籤
-            using (var font = new Font("Arial", 10))
-            using (var brush = new SolidBrush(Color.Black))
-            {
-                for (int i = 0; i < BOARD_SIZE; i++)
-                {
-                    string label = ((char)('A' + i)).ToString();
-                    // 頂部座標
-                    graphics.DrawString(label, font, brush,
-                        MARGIN + i * CELL_SIZE, 10,
-                        new StringFormat { Alignment = StringAlignment.Center });
-                    // 左側座標
-                    graphics.DrawString(label, font, brush,
-                        10, MARGIN + i * CELL_SIZE,
-                        new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
-                }
-            }
+    //         // 繪製座標標籤
+    //         using (var font = new Font("Arial", 10))
+    //         using (var brush = new SolidBrush(Color.Black))
+    //         {
+    //             for (int i = 0; i < BOARD_SIZE; i++)
+    //             {
+    //                 string label = ((char)('A' + i)).ToString();
+    //                 // 頂部座標
+    //                 graphics.DrawString(label, font, brush,
+    //                     MARGIN + i * CELL_SIZE, 10,
+    //                     new StringFormat { Alignment = StringAlignment.Center });
+    //                 // 左側座標
+    //                 graphics.DrawString(label, font, brush,
+    //                     10, MARGIN + i * CELL_SIZE,
+    //                     new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+    //             }
+    //         }
 
-            // 繪製棋子
-            foreach (var stone in stones)
-            {
-                int centerX = MARGIN + stone.X * CELL_SIZE;
-                int centerY = MARGIN + stone.Y * CELL_SIZE;
+    //         // 繪製棋子
+    //         foreach (var stone in stones)
+    //         {
+    //             int centerX = MARGIN + stone.X * CELL_SIZE;
+    //             int centerY = MARGIN + stone.Y * CELL_SIZE;
 
-                if (stone.IsBlack)
-                {
-                    using (var brush = new SolidBrush(Color.Black))
-                    {
-                        graphics.FillEllipse(brush, 
-                            centerX - STONE_SIZE/2, 
-                            centerY - STONE_SIZE/2, 
-                            STONE_SIZE, STONE_SIZE);
-                    }
-                }
-                else
-                {
-                    using (var brush = new SolidBrush(Color.White))
-                    using (var pen = new Pen(Color.Black, 1))
-                    {
-                        graphics.FillEllipse(brush, 
-                            centerX - STONE_SIZE/2, 
-                            centerY - STONE_SIZE/2, 
-                            STONE_SIZE, STONE_SIZE);
-                        graphics.DrawEllipse(pen, 
-                            centerX - STONE_SIZE/2, 
-                            centerY - STONE_SIZE/2, 
-                            STONE_SIZE, STONE_SIZE);
-                    }
-                }
-            }
+    //             if (stone.IsBlack)
+    //             {
+    //                 using (var brush = new SolidBrush(Color.Black))
+    //                 {
+    //                     graphics.FillEllipse(brush, 
+    //                         centerX - STONE_SIZE/2, 
+    //                         centerY - STONE_SIZE/2, 
+    //                         STONE_SIZE, STONE_SIZE);
+    //                 }
+    //             }
+    //             else
+    //             {
+    //                 using (var brush = new SolidBrush(Color.White))
+    //                 using (var pen = new Pen(Color.Black, 1))
+    //                 {
+    //                     graphics.FillEllipse(brush, 
+    //                         centerX - STONE_SIZE/2, 
+    //                         centerY - STONE_SIZE/2, 
+    //                         STONE_SIZE, STONE_SIZE);
+    //                     graphics.DrawEllipse(pen, 
+    //                         centerX - STONE_SIZE/2, 
+    //                         centerY - STONE_SIZE/2, 
+    //                         STONE_SIZE, STONE_SIZE);
+    //                 }
+    //             }
+    //         }
 
-            bitmap.Save(outputPath, ImageFormat.Png);
-        }
-    }
+    //         bitmap.Save(outputPath, ImageFormat.Png);
+    //     }
+    // }
 }
 
 class Program
